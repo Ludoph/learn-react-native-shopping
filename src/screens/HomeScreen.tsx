@@ -10,9 +10,11 @@ import * as React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 import Icons from "@expo/vector-icons/MaterialIcons";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import MasonryList from "reanimated-masonry-list";
 import { BlurView } from "expo-blur";
+import BottomSheet from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheet/BottomSheet";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 const AVATAR =
   "https://ih1.redbubble.net/image.1671944269.9239/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.u1.jpg";
@@ -28,6 +30,7 @@ const CATEGORIES = [
 const HomeScreen = () => {
   const { colors } = useTheme();
   const [categoryIndex, setCategoryIndex] = useState(0);
+  const BottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -206,104 +209,118 @@ const HomeScreen = () => {
           keyExtractor={(item): string => item}
           numColumns={2}
           contentContainerStyle={{
-            padding: 24,
+            padding: 16,
           }}
           showsVerticalScrollIndicator={false}
           renderItem={({ item, i }) => (
             <View
               style={{
-                aspectRatio: i === 0 ? 1 : 2 / 3,
-                position: "relative",
-                overflow: "hidden",
-                marginTop: 12,
-                borderRadius: 20,
+                padding: 6,
               }}
             >
-              <Image
-                source={{
-                  uri: "https://images.unsplash.com/photo-1467043237213-65f2da53396f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
-                }}
-                resizeMode="cover"
+              <View
                 style={{
-                  position: "absolute",
-                  top: 0,
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
+                  aspectRatio: i === 0 ? 1 : 2 / 3,
+                  position: "relative",
+                  overflow: "hidden",
+                  borderRadius: 20,
                 }}
-              />
-              <View style={{
-                flex:1,
-                flexDirection: 'column',
-                justifyContent: 'space-between'
-              }}>
-                <View style={{ flexDirection: "row", padding: 12, gap: 8 }}>
-                  <Text
-                    style={{
-                      flex: 1,
-                      fontSize: 12,
-                      fontWeight: "600",
-                      color: colors.text,
-                    }}
-                  >
-                    PUMA Everyday Hussle
-                  </Text>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: colors.background,
-                      borderRadius: 100,
-                      height: 32,
-                      aspectRatio: 1,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Icons
-                      name="favorite-border"
-                      size={20}
-                      color={colors.text}
-                    />
-                  </TouchableOpacity>
-                </View>
-                <BlurView
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    backgroundColor: "rgba(0,0,0,0.5)",
-                    paddingVertical: 6,
-                    borderRadius: 100,
-                    overflow: 'hidden',
-                    margin: 12,
-                    paddingHorizontal:6
-                    
+              >
+                <Image
+                  source={{
+                    uri: "https://images.unsplash.com/photo-1467043237213-65f2da53396f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
                   }}
-                  intensity={20}
+                  resizeMode="cover"
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                  }}
+                />
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}
                 >
-                  <Text
-                    style={{ flex: 1, 
-                        fontSize: 12, 
-                        color: colors.background,
-                        marginLeft:6
+                  <View style={{ flexDirection: "row", padding: 12, gap: 8 }}>
+                    <Text
+                      style={{
+                        flex: 1,
+                        fontSize: 12,
+                        fontWeight: "600",
+                        color: colors.text,
+                      }}
+                    >
+                      PUMA Everyday Hussle
+                    </Text>
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: colors.background,
+                        borderRadius: 100,
+                        height: 32,
+                        aspectRatio: 1,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Icons
+                        name="favorite-border"
+                        size={20}
+                        color={colors.text}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <BlurView
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      backgroundColor: "rgba(0,0,0,0.5)",
+                      paddingVertical: 6,
+                      borderRadius: 100,
+                      overflow: "hidden",
+                      margin: 12,
+                      paddingHorizontal: 6,
                     }}
-                    numberOfLines={1}
+                    intensity={20}
                   >
-                    160€
-                  </Text>
-                  <TouchableOpacity style={{
-                    paddingHorizontal: 16,
-                    paddingVertical: 6,
-                    borderRadius: 100,
-                    backgroundColor: colors.background
-                    }}>
-                    <Icons name="add-shopping-cart" size={20} color={colors.text} />
-                  </TouchableOpacity>
-                </BlurView>
+                    <Text
+                      style={{
+                        flex: 1,
+                        fontSize: 12,
+                        color: colors.background,
+                        marginLeft: 6,
+                      }}
+                      numberOfLines={1}
+                    >
+                      160€
+                    </Text>
+                    <TouchableOpacity
+                      style={{
+                        paddingHorizontal: 16,
+                        paddingVertical: 6,
+                        borderRadius: 100,
+                        backgroundColor: colors.background,
+                      }}
+                    >
+                      <Icons
+                        name="add-shopping-cart"
+                        size={20}
+                        color={colors.text}
+                      />
+                    </TouchableOpacity>
+                  </BlurView>
+                </View>
               </View>
             </View>
           )}
           onEndReachedThreshold={0.1}
         />
       </SafeAreaView>
+      <BottomSheetModal children={undefined} snapPoints={[]}></BottomSheetModal>
     </ScrollView>
   );
 };
