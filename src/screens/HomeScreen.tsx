@@ -1,14 +1,24 @@
-import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, Image, TouchableOpacity, FlatList } from "react-native";
 import * as React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 import Icons from "@expo/vector-icons/MaterialIcons";
+import { useState } from "react";
 
 const AVATAR =
   "https://ih1.redbubble.net/image.1671944269.9239/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.u1.jpg";
 
+const CATEGORIES = [
+    "Vêtements", 
+    "Chaussures",
+    "Accessoires",
+    "Accessoires 2",
+    "Accessoires 3",
+];
+
 const HomeScreen = () => {
   const { colors } = useTheme();
+  const [categoryIndex, setCategoryIndex] = useState(0);
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -118,6 +128,7 @@ const HomeScreen = () => {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
+              marginBottom: 12,
             }}
           >
             <Text
@@ -132,29 +143,98 @@ const HomeScreen = () => {
               <Text>See All</Text>
             </TouchableOpacity>
           </View>
-          <View style={{ flexDirection: "row" }}>
+          <View style={{ flexDirection: "row", height: 200, gap: 12 }}>
             {/* Card */}
-            <View
-              style={{
-                flex: 1,
-                height: 200,
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              <Image
-                source={require("../assets/images/image-1.jpg")}
-                resizeMode="cover"
-                style={{
-                    flex:1
-                }}
-              />
+            <View style={{flex: 1 }}>
+                <Card />
+            </View>
+            <View style={{flex:1, gap: 12}}>
+                <Card />
+                <Card />
             </View>
           </View>
         </View>
+        {/* Categories Section */}
+        <FlatList 
+            data={CATEGORIES} 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+                paddingHorizontal: 16,
+                gap: 16,
+            }}
+            renderItem={({item, index}) => {
+                const isSelected = categoryIndex === index;
+                return (
+                    <TouchableOpacity onPress={()=> setCategoryIndex(index)}
+                     style={{
+                        backgroundColor: isSelected ? colors.primary : colors.card, 
+                        paddingHorizontal: 16, 
+                        paddingVertical: 10,
+                        borderRadius: 100,
+                        borderWidth: isSelected ? 1 : 0,
+                        borderColor: colors.border,
+                    }}>
+                        <Text style={{
+                            color: isSelected ? colors.background : colors.text,
+                            fontWeight: '600',
+                            fontSize: 16,
+                            opacity: isSelected ? 1 : 0.5,
+                        }}
+                        >
+                            {item}
+                        </Text>
+                    </TouchableOpacity>
+
+                )
+            }}
+         />
+         {/* Masonary-list section */}
       </SafeAreaView>
     </ScrollView>
   );
 };
 
 export default HomeScreen;
+
+const Card = () =>{
+    return(
+        <View
+        style={{
+          flex: 1,
+          position: "relative",
+          overflow: "hidden",
+          borderRadius: 20,
+        }}
+      >
+        <Image
+          source={{
+            uri: "https://images.unsplash.com/photo-1682685797439-a05dd915cee9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1587&q=80",
+          }}
+          resizeMode="cover"
+          style={{
+              position: "absolute",
+              top:0,
+              bottom:0,
+              left:0,
+              right:0,
+          }}
+        />
+        <View 
+            style={{
+                position: "absolute",
+                left: 16,
+                top: 16,
+                paddingHorizontal: 16,
+                paddingVertical: 10, 
+                backgroundColor: "rgba(0,0,0,0.25)",
+                borderRadius: 100,
+            }}
+        >
+            <Text style={{fontSize: 14, fontWeight: "600", color: "#fff"}}>
+                130€
+             </Text>
+        </View>
+      </View>
+    );
+};
