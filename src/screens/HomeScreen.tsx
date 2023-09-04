@@ -10,12 +10,11 @@ import * as React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 import Icons from "@expo/vector-icons/MaterialIcons";
-import { useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import MasonryList from "reanimated-masonry-list";
 import { BlurView } from "expo-blur";
-import BottomSheet from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheet/BottomSheet";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-
+import CustomBackdrop from "../components/CustomBackdrop";
 const AVATAR =
   "https://ih1.redbubble.net/image.1671944269.9239/bg,f8f8f8-flat,750x,075,f-pad,750x1000,f8f8f8.u1.jpg";
 
@@ -30,7 +29,12 @@ const CATEGORIES = [
 const HomeScreen = () => {
   const { colors } = useTheme();
   const [categoryIndex, setCategoryIndex] = useState(0);
+
   const BottomSheetModalRef = useRef<BottomSheetModal>(null);
+//   const snapPoints = useMemo(() => ["25%", "75%"], []);
+  const onFilterModal = useCallback(() => {
+    BottomSheetModalRef.current?.present();
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -87,7 +91,7 @@ const HomeScreen = () => {
             <Icons name="notifications" size={24} color={colors.text} />
           </TouchableOpacity>
         </View>
-        {/* Search section */}
+        {/* Search bar section */}
         <View style={{ flexDirection: "row", paddingHorizontal: 24, gap: 12 }}>
           <TouchableOpacity
             style={{
@@ -120,6 +124,7 @@ const HomeScreen = () => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={onFilterModal}
             style={{
               width: 52,
               aspectRatio: 1,
@@ -212,7 +217,7 @@ const HomeScreen = () => {
             padding: 16,
           }}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item, i }) => (
+          renderItem={({ i }) => (
             <View
               style={{
                 padding: 6,
@@ -320,7 +325,14 @@ const HomeScreen = () => {
           onEndReachedThreshold={0.1}
         />
       </SafeAreaView>
-      <BottomSheetModal children={undefined} snapPoints={[]}></BottomSheetModal>
+      <BottomSheetModal
+        ref={BottomSheetModalRef}
+        index={0}
+        snapPoints={['75%']}
+        backdropComponent={(props) => <CustomBackdrop {...props} />}
+      >
+        <Text>Modal</Text>
+      </BottomSheetModal>
     </ScrollView>
   );
 };
